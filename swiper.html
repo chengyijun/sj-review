@@ -71,6 +71,43 @@
             float: left;
 
         }
+
+        #pointer {
+            z-index: 100;
+            font-size: 20px;
+            /*background-color: cyan;*/
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            display: inline;
+        }
+
+        .po {
+            background-color: rgba(255, 255, 255, .7);
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 100%;
+            float: left;
+            list-style: none;
+            margin-right: 10px;
+        }
+
+        .po.active {
+            background-color: rgba(0, 0, 0, .7);
+            color: white;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 100%;
+            float: left;
+            list-style: none;
+            margin-right: 10px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -86,6 +123,14 @@
             <div class="slice">1</div>
         </div>
     </div>
+
+    <ul id="pointer">
+        <li class="po active">1</li>
+        <li class="po">2</li>
+        <li class="po">3</li>
+        <li class="po">4</li>
+        <li class="po">5</li>
+    </ul>
 </div>
 
 <script>
@@ -94,13 +139,16 @@
         constructor() {
             this.slider = document.getElementById('slider')
             this.currentIndex = 1
+            // 自动播放定时器
+            this.autoPlayTimer = null
+            this.pointers = document.getElementById('pointer').children
         }
 
         goRight() {
             let steps = this.getSteps(0, 900)
 
 
-            let t1 = setInterval(() => {
+            const t1 = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
                 if (steps.length > 0) {
@@ -111,6 +159,7 @@
                     clearInterval(t1)
                     // 将当前显示的滑片索引+1
                     this.currentIndex++
+
                 }
             }, 30)
 
@@ -118,8 +167,19 @@
             if (this.currentIndex === 6) {
                 this.slider.style.left = -900 + 'px'
                 this.currentIndex = 1
-
+                // 为小圆点设置活动
+                for (let pointer of this.pointers) {
+                    pointer.classList.remove('active')
+                }
+                this.pointers[this.currentIndex - 1].classList.add('active')
             }
+
+            // 为小圆点设置活动
+            for (let pointer of this.pointers) {
+                pointer.classList.remove('active')
+            }
+            if (this.currentIndex <= 4)
+                this.pointers[this.currentIndex].classList.add('active')
 
         }
 
@@ -127,7 +187,7 @@
             let steps = this.getSteps(0, 900)
 
 
-            var t1 = setInterval(() => {
+            const t1 = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
                 if (steps.length > 0) {
@@ -147,8 +207,11 @@
             }
         }
 
+        /**
+         * 自动播放
+         */
         autoPlay() {
-            const timer = setInterval(() => {
+            this.autoPlayTimer = setInterval(() => {
                 this.goRight()
             }, 3000)
         }
