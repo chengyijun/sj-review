@@ -107,6 +107,36 @@
             margin-right: 10px;
         }
 
+        .btn {
+            z-index: 100;
+            position: absolute;
+            bottom: 150px;
+            width: 50px;
+            height: 100px;
+            font-size: 30px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:hover {
+            z-index: 100;
+            position: absolute;
+            bottom: 150px;
+            width: 50px;
+            height: 100px;
+            font-size: 30px;
+            color: black;
+            background-color: rgba(255, 0, 0, 0.4);
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            right: 0;
+        }
+
 
     </style>
 </head>
@@ -131,17 +161,33 @@
         <li class="po">4</li>
         <li class="po">5</li>
     </ul>
+
+    <button id="btnleft" class="btn left"><</button>
+    <button id="btnright" class="btn right">></button>
 </div>
 
 <script>
 
     class Swiper {
         constructor() {
+            this.btnleft = document.getElementById('btnleft')
+            this.btnright = document.getElementById('btnright')
             this.slider = document.getElementById('slider')
             this.currentIndex = 1
             // 自动播放定时器
             this.autoPlayTimer = null
             this.pointers = document.getElementById('pointer').children
+            // 监听
+            this.btnleft.addEventListener('click', () => {
+                clearInterval(this.autoPlayTimer)
+                this.goLeft()
+                this.autoPlay()
+            })
+            this.btnright.addEventListener('click', () => {
+                clearInterval(this.autoPlayTimer)
+                this.goRight()
+                this.autoPlay()
+            })
         }
 
         goRight() {
@@ -163,7 +209,7 @@
                 }
             }, 30)
 
-
+            // 防止越界
             if (this.currentIndex === 6) {
                 this.slider.style.left = -900 + 'px'
                 this.currentIndex = 1
