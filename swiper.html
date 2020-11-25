@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #box {
+            width: 900px;
+            height: 400px;
+            background-color: cyan;
+            margin: 50px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #viewer {
+            width: 900px;
+            height: 400px;
+            background-color: lightblue;
+
+
+        }
+
+        #slider {
+            width: 6300px;
+            height: 400px;
+            position: absolute;
+            top: 0;
+            left: -900px;
+
+        }
+
+        .slice:nth-child(1) {
+            background-color: blue;
+        }
+
+        .slice:nth-child(2) {
+            background-color: red;
+        }
+
+        .slice:nth-child(3) {
+            background-color: orange;
+        }
+
+        .slice:nth-child(4) {
+            background-color: purple;
+        }
+
+        .slice:nth-child(5) {
+            background-color: green;
+        }
+
+        .slice:nth-child(6) {
+            background-color: blue;
+        }
+
+        .slice:nth-child(7) {
+            background-color: red;
+        }
+
+        .slice {
+            width: 900px;
+            height: 400px;
+            color: white;
+            font-size: 50px;
+            float: left;
+
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div id="viewer">
+        <div id="slider">
+            <div class="slice">5</div>
+            <div class="slice">1</div>
+            <div class="slice">2</div>
+            <div class="slice">3</div>
+            <div class="slice">4</div>
+            <div class="slice">5</div>
+            <div class="slice">1</div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    class Swiper {
+        constructor() {
+            this.slider = document.getElementById('slider')
+            this.currentIndex = 1
+        }
+
+        goRight() {
+            let steps = this.getSteps(0, 900)
+
+
+            var t1 = setInterval(() => {
+                let now = parseInt(window.getComputedStyle(this.slider, null).left)
+                // 移动
+                if (steps.length > 0) {
+                    this.slider.style.left = now - steps.pop() + 'px'
+                } else {
+                    // 完成了移动
+                    // 清除定时器
+                    clearInterval(t1)
+                    // 将当前显示的滑片索引+1
+                    this.currentIndex++
+                }
+            }, 30)
+
+
+            if (this.currentIndex === 6) {
+                this.slider.style.left = -900 + 'px'
+                this.currentIndex = 1
+
+            }
+
+        }
+
+        goLeft() {
+            let steps = this.getSteps(0, 900)
+
+
+            var t1 = setInterval(() => {
+                let now = parseInt(window.getComputedStyle(this.slider, null).left)
+                // 移动
+                if (steps.length > 0) {
+                    this.slider.style.left = now + steps.pop() + 'px'
+                } else {
+                    // 完成了移动
+                    // 清除定时器
+                    clearInterval(t1)
+                    // 将当前显示的滑片索引-1
+                    this.currentIndex--
+                }
+            }, 30)
+
+            if (this.currentIndex === 0) {
+                this.slider.style.left = -4500 + 'px'
+                this.currentIndex = 5
+            }
+        }
+
+        autoPlay() {
+            const timer = setInterval(() => {
+                this.goRight()
+            }, 3000)
+        }
+
+        sortNumber(a, b) {
+            return a - b
+        }
+
+        /**
+         * 获取给定范围的等差数列作为移动的步长
+         */
+        getSteps(start, end) {
+            let range = end - start
+            let total = 0
+            let step = 1
+            let arrs = []
+            while (total < range) {
+                step++
+                total += step
+                arrs.push(step)
+            }
+
+            let tmp = 0
+            tmp = total - range
+            if (tmp > 0) {
+                let last = arrs.pop()
+                arrs.push(last - tmp)
+            }
+            arrs.sort(this.sortNumber)
+            return arrs
+        }
+
+
+    }
+
+
+    const swiper = new Swiper()
+    swiper.autoPlay()
+</script>
+</body>
+</html>
