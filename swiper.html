@@ -36,31 +36,31 @@
         }
 
         .slice:nth-child(1) {
-            background-color: blue;
+            background-color: lightcoral;
         }
 
         .slice:nth-child(2) {
-            background-color: red;
+            background-color: lightsalmon;
         }
 
         .slice:nth-child(3) {
-            background-color: orange;
+            background-color: lightcyan;
         }
 
         .slice:nth-child(4) {
-            background-color: purple;
+            background-color: lightgoldenrodyellow;
         }
 
         .slice:nth-child(5) {
-            background-color: green;
+            background-color: lightgray;
         }
 
         .slice:nth-child(6) {
-            background-color: blue;
+            background-color: lightgreen;
         }
 
         .slice:nth-child(7) {
-            background-color: red;
+            background-color: lightpink;
         }
 
         .slice {
@@ -145,13 +145,11 @@
 <div id="box">
     <div id="viewer">
         <div id="slider">
-            <div class="slice">5</div>
             <div class="slice">1</div>
             <div class="slice">2</div>
             <div class="slice">3</div>
             <div class="slice">4</div>
             <div class="slice">5</div>
-            <div class="slice">1</div>
         </div>
     </div>
 
@@ -171,9 +169,19 @@
 
     class Swiper {
         constructor() {
+            // 获取dom
             this.btnleft = document.getElementById('btnleft')
             this.btnright = document.getElementById('btnright')
             this.slider = document.getElementById('slider')
+            this.slices = this.slider.children
+
+            // 为了无缝衔接进行轮播 需要将头滑片复制一个加到尾部  将尾部滑片复制一个添加到头部
+            this.firstNode = this.slices[this.slices.length - 1].cloneNode(true)
+            this.lastNode = this.slices[0].cloneNode(true)
+            this.slider.appendChild(this.lastNode)
+            this.slider.insertBefore(this.firstNode, this.slices[0])
+
+            // 初始轮播位置
             this.currentIndex = 0
             // 自动播放定时器
             this.autoPlayTimer = null
@@ -185,7 +193,7 @@
             this.isLeftBtnClick = true
             this.isRightBtnClick = true
 
-            // 监听
+            // 监听左右按钮点击事件
             this.btnleft.addEventListener('click', () => {
                 if (!this.isLeftBtnClick)
                     return
@@ -194,7 +202,6 @@
                 this.autoPlay()
             })
             this.btnright.addEventListener('click', () => {
-
                 if (!this.isRightBtnClick)
                     return
                 clearInterval(this.autoPlayTimer)
@@ -205,7 +212,6 @@
 
         goRight() {
             let steps = this.getSteps(0, 900)
-
             this.rightPlayTimer = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
@@ -224,14 +230,11 @@
 
                 }
             }, 30)
-
             // 防止越界
             if (this.currentIndex === 5) {
                 this.slider.style.left = -900 + 'px'
                 this.currentIndex = 0
             }
-
-
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
@@ -240,14 +243,10 @@
                 this.pointers[this.currentIndex + 1].classList.add('active')
             else
                 this.pointers[0].classList.add('active')
-
-
         }
 
         goLeft() {
             let steps = this.getSteps(0, 900)
-
-
             this.leftPlayTImer = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
@@ -265,14 +264,11 @@
                     this.isLeftBtnClick = true
                 }
             }, 30)
-
             // 防止越界
             if (this.currentIndex === -1) {
                 this.slider.style.left = -4500 + 'px'
                 this.currentIndex = 4
             }
-
-
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
@@ -319,8 +315,6 @@
             arrs.sort(this.sortNumber)
             return arrs
         }
-
-
     }
 
 
