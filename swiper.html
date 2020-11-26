@@ -116,6 +116,7 @@
             font-size: 30px;
             color: white;
             background-color: rgba(0, 0, 0, 0.4);
+            border: 0;
         }
 
         .btn:hover {
@@ -173,17 +174,29 @@
             this.btnleft = document.getElementById('btnleft')
             this.btnright = document.getElementById('btnright')
             this.slider = document.getElementById('slider')
-            this.currentIndex = 1
+            this.currentIndex = 0
             // 自动播放定时器
             this.autoPlayTimer = null
+            this.leftPlayTImer = null
+            this.rightPlayTimer = null
             this.pointers = document.getElementById('pointer').children
+
+            // 是否可以点击按钮标志
+            this.isLeftBtnClick = true
+            this.isRightBtnClick = true
+
             // 监听
             this.btnleft.addEventListener('click', () => {
+                if (!this.isLeftBtnClick)
+                    return
                 clearInterval(this.autoPlayTimer)
                 this.goLeft()
                 this.autoPlay()
             })
             this.btnright.addEventListener('click', () => {
+
+                if (!this.isRightBtnClick)
+                    return
                 clearInterval(this.autoPlayTimer)
                 this.goRight()
                 this.autoPlay()
@@ -193,39 +206,41 @@
         goRight() {
             let steps = this.getSteps(0, 900)
 
-
-            const t1 = setInterval(() => {
+            this.rightPlayTimer = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
                 if (steps.length > 0) {
                     this.slider.style.left = now - steps.pop() + 'px'
+                    // 移动过程中 按钮改为不可以点击状态
+                    this.isRightBtnClick = false
                 } else {
                     // 完成了移动
                     // 清除定时器
-                    clearInterval(t1)
+                    clearInterval(this.rightPlayTimer)
                     // 将当前显示的滑片索引+1
                     this.currentIndex++
+                    // 移动完成 按钮改为可以点击状态
+                    this.isRightBtnClick = true
 
                 }
             }, 30)
 
             // 防止越界
-            if (this.currentIndex === 6) {
+            if (this.currentIndex === 5) {
                 this.slider.style.left = -900 + 'px'
-                this.currentIndex = 1
-                // 为小圆点设置活动
-                for (let pointer of this.pointers) {
-                    pointer.classList.remove('active')
-                }
-                this.pointers[this.currentIndex - 1].classList.add('active')
+                this.currentIndex = 0
             }
 
-            // 为小圆点设置活动
+
+            // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
             }
-            if (this.currentIndex <= 4)
-                this.pointers[this.currentIndex].classList.add('active')
+            if (this.currentIndex < 4)
+                this.pointers[this.currentIndex + 1].classList.add('active')
+            else
+                this.pointers[0].classList.add('active')
+
 
         }
 
@@ -233,24 +248,39 @@
             let steps = this.getSteps(0, 900)
 
 
-            const t1 = setInterval(() => {
+            this.leftPlayTImer = setInterval(() => {
                 let now = parseInt(window.getComputedStyle(this.slider, null).left)
                 // 移动
                 if (steps.length > 0) {
                     this.slider.style.left = now + steps.pop() + 'px'
+                    // 移动过程中 按钮改为不可以点击状态
+                    this.isLeftBtnClick = false
                 } else {
                     // 完成了移动
                     // 清除定时器
-                    clearInterval(t1)
+                    clearInterval(this.leftPlayTImer)
                     // 将当前显示的滑片索引-1
                     this.currentIndex--
+                    // 移动完成 按钮改为可以点击状态
+                    this.isLeftBtnClick = true
                 }
             }, 30)
 
-            if (this.currentIndex === 0) {
+            // 防止越界
+            if (this.currentIndex === -1) {
                 this.slider.style.left = -4500 + 'px'
-                this.currentIndex = 5
+                this.currentIndex = 4
             }
+
+
+            // 为小圆点设置活动样式
+            for (let pointer of this.pointers) {
+                pointer.classList.remove('active')
+            }
+            if (this.currentIndex > 0) {
+                this.pointers[this.currentIndex - 1].classList.add('active')
+            } else
+                this.pointers[4].classList.add('active')
         }
 
         /**
