@@ -181,7 +181,15 @@
             // 是否可以点击按钮标志
             this.isLeftBtnClick = true
             this.isRightBtnClick = true
-            // 监听左右按钮点击事件
+            // 监听事件
+            this.eventHandlers();
+        }
+
+        /**
+         * 注册监听事件
+         */
+        eventHandlers() {
+            // 监听左按钮
             this.btnleft.addEventListener('click', () => {
                 if (!this.isLeftBtnClick)
                     return
@@ -189,6 +197,7 @@
                 this.goLeft()
                 this.autoPlay()
             })
+            // 监听右按钮
             this.btnright.addEventListener('click', () => {
                 if (!this.isRightBtnClick)
                     return
@@ -224,6 +233,37 @@
                 }
                 // 给li设置内容
                 li.innerText = String(i + 1)
+                // 给li注册点击事件监听
+                li.onclick = (e) => {
+
+                    if (!this.isLeftBtnClick)
+                        return
+                    clearInterval(this.autoPlayTimer)
+
+                    this.isLeftBtnClick = false
+                    this.isRightBtnClick = false
+                    animation(this.slider, {left: -this.sliceWidth * (i + 1)}, (res) => {
+                        // console.log(res);
+                        // 将当前显示的滑片索引+1
+                        this.currentIndex++
+                        // 移动完成 按钮改为可以点击状态
+                        this.isLeftBtnClick = true
+                        this.isRightBtnClick = true
+                        // 防止越界
+                        if (this.currentIndex === (this.sliceCount - 1)) {
+                            this.slider.style.left = '-' + this.sliceWidth + 'px'
+                            this.currentIndex = 1
+                        }
+                    })
+                    // 为小圆点设置活动样式
+                    for (let pointer of this.pointers) {
+                        pointer.classList.remove('active')
+                    }
+                    this.pointers[i].classList.add('active')
+                    // 点击小圆点之后恢复自动播放
+                    this.autoPlay()
+
+                }
                 // 将li追加到pointer里面
                 this.pointer.appendChild(li)
             }
@@ -236,7 +276,7 @@
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex + 1)}, (res) => {
-                console.log(res);
+                // console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex++
                 // 移动完成 按钮改为可以点击状态
@@ -265,7 +305,7 @@
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex - 1)}, (res) => {
-                console.log(res);
+                // console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex--
                 // 移动完成 按钮改为可以点击状态
