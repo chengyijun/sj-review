@@ -35,39 +35,32 @@
 
         }
 
-        .slice:nth-child(1) {
-            background-color: lightcoral;
+        .s1 {
+            background-color: red;
         }
 
-        .slice:nth-child(2) {
-            background-color: lightsalmon;
+        .s2 {
+            background-color: blue;
         }
 
-        .slice:nth-child(3) {
-            background-color: lightcyan;
+        .s3 {
+            background-color: yellow;
         }
 
-        .slice:nth-child(4) {
-            background-color: lightgoldenrodyellow;
+        .s4 {
+            background-color: green;
         }
 
-        .slice:nth-child(5) {
-            background-color: lightgray;
+        .s5 {
+            background-color: purple;
         }
 
-        .slice:nth-child(6) {
-            background-color: lightgreen;
-        }
-
-        .slice:nth-child(7) {
-            background-color: lightpink;
-        }
 
         .slice {
             width: 900px;
             height: 400px;
-            color: white;
-            font-size: 50px;
+            color: cyan;
+            font-size: 100px;
             float: left;
 
         }
@@ -146,11 +139,11 @@
 <div id="box">
     <div id="viewer">
         <div id="slider">
-            <div class="slice">1</div>
-            <div class="slice">2</div>
-            <div class="slice">3</div>
-            <div class="slice">4</div>
-            <div class="slice">5</div>
+            <div class="slice s1">1</div>
+            <div class="slice s2">2</div>
+            <div class="slice s3">3</div>
+            <div class="slice s4">4</div>
+            <div class="slice s5">5</div>
         </div>
     </div>
 
@@ -183,7 +176,7 @@
             this.slider.insertBefore(this.firstNode, this.slices[0])
 
             // 初始轮播位置
-            this.currentIndex = 0
+            this.currentIndex = 1
             // 自动播放定时器
             this.autoPlayTimer = null
             this.leftPlayTImer = null
@@ -211,11 +204,14 @@
             })
         }
 
+        /**
+         * 向右播放
+         */
         goRight() {
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
 
-            animation(this.slider, {left: -900 * (this.currentIndex + 2)}, (res) => {
+            animation(this.slider, {left: -900 * (this.currentIndex + 1)}, (res) => {
                 console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex++
@@ -224,9 +220,9 @@
                 this.isRightBtnClick = true
 
                 // 防止越界
-                if (this.currentIndex === 5) {
+                if (this.currentIndex === 6) {
                     this.slider.style.left = -900 + 'px'
-                    this.currentIndex = 0
+                    this.currentIndex = 1
                 }
             })
 
@@ -234,18 +230,21 @@
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
             }
-            if (this.currentIndex < 4)
-                this.pointers[this.currentIndex + 1].classList.add('active')
+            if (this.currentIndex < 5)
+                this.pointers[this.currentIndex].classList.add('active')
             else
                 this.pointers[0].classList.add('active')
         }
 
+        /**
+         * 向坐播放
+         */
         goLeft() {
 
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
 
-            animation(this.slider, {left: -900 * (this.currentIndex)}, (res) => {
+            animation(this.slider, {left: -900 * (this.currentIndex - 1)}, (res) => {
                 console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex--
@@ -253,9 +252,9 @@
                 this.isLeftBtnClick = true
                 this.isRightBtnClick = true
                 // 防止越界
-                if (this.currentIndex === -1) {
+                if (this.currentIndex === 0) {
                     this.slider.style.left = -4500 + 'px'
-                    this.currentIndex = 4
+                    this.currentIndex = 5
                 }
             })
 
@@ -263,9 +262,9 @@
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
             }
-            if (this.currentIndex > 0) {
-                this.pointers[this.currentIndex - 1].classList.add('active')
-            } else
+            if (this.currentIndex > 1)
+                this.pointers[this.currentIndex - 2].classList.add('active')
+            else
                 this.pointers[4].classList.add('active')
         }
 

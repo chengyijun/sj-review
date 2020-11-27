@@ -26,7 +26,7 @@ function animation(obj, json, callback) {
     let direction
     let current
     let isStop = true
-    const t1 = setInterval(function () {
+    obj.t1 = setInterval(function () {
         for (let attr in json) {
             if (attr === 'opacity') {
                 now = parseInt(getCurrentStyle(obj, attr) * 100)
@@ -45,7 +45,7 @@ function animation(obj, json, callback) {
         }
 
         if (isStop) {
-            clearInterval(t1)
+            clearInterval(obj.t1)
             callback('动画执行结束！')
         }
     }, 30)
