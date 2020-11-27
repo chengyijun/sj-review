@@ -148,11 +148,7 @@
     </div>
 
     <ul id="pointer">
-        <li class="po active">1</li>
-        <li class="po">2</li>
-        <li class="po">3</li>
-        <li class="po">4</li>
-        <li class="po">5</li>
+
     </ul>
 
     <button id="btnleft" class="btn left"><</button>
@@ -168,25 +164,23 @@
             this.btnright = document.getElementById('btnright')
             this.slider = document.getElementById('slider')
             this.slices = this.slider.children
-
+            this.pointer = document.getElementById('pointer')
+            // 动态创建小圆点
+            this.createPointers();
+            this.pointers = document.getElementById('pointer').children
             // 为了无缝衔接进行轮播 需要将头滑片复制一个加到尾部  将尾部滑片复制一个添加到头部
-            this.firstNode = this.slices[this.slices.length - 1].cloneNode(true)
-            this.lastNode = this.slices[0].cloneNode(true)
-            this.slider.appendChild(this.lastNode)
-            this.slider.insertBefore(this.firstNode, this.slices[0])
-
+            this.setSeamlessSlices();
+            // 获取单个滑片的宽度
+            this.sliceWidth = parseInt(getCurrentStyle(this.slices[0], 'width'))
+            // 获取滑片个数
+            this.sliceCount = this.slices.length
             // 初始轮播位置
             this.currentIndex = 1
             // 自动播放定时器
             this.autoPlayTimer = null
-            this.leftPlayTImer = null
-            this.rightPlayTimer = null
-            this.pointers = document.getElementById('pointer').children
-
             // 是否可以点击按钮标志
             this.isLeftBtnClick = true
             this.isRightBtnClick = true
-
             // 监听左右按钮点击事件
             this.btnleft.addEventListener('click', () => {
                 if (!this.isLeftBtnClick)
@@ -205,32 +199,60 @@
         }
 
         /**
+         * 为了无缝衔接进行轮播 需要将头滑片复制一个加到尾部  将尾部滑片复制一个添加到头部
+         */
+        setSeamlessSlices() {
+            this.firstNode = this.slices[this.slices.length - 1].cloneNode(true)
+            this.lastNode = this.slices[0].cloneNode(true)
+            this.slider.appendChild(this.lastNode)
+            this.slider.insertBefore(this.firstNode, this.slices[0])
+        }
+
+        /**
+         * 动态创建小圆点
+         */
+        createPointers() {
+            // 记录无缝处理前真实的滑片数 用来动态创建小圆点
+            this.realSliceCount = this.slices.length
+            for (let i = 0; i < this.realSliceCount; i++) {
+                // 创建li
+                const li = document.createElement('li')
+                // 给li设置className
+                li.classList.add('po')
+                if (i === 0) {
+                    li.classList.add('active')
+                }
+                // 给li设置内容
+                li.innerText = String(i + 1)
+                // 将li追加到pointer里面
+                this.pointer.appendChild(li)
+            }
+        }
+
+        /**
          * 向右播放
          */
         goRight() {
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
-
-            animation(this.slider, {left: -900 * (this.currentIndex + 1)}, (res) => {
+            animation(this.slider, {left: -this.sliceWidth * (this.currentIndex + 1)}, (res) => {
                 console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex++
                 // 移动完成 按钮改为可以点击状态
                 this.isLeftBtnClick = true
                 this.isRightBtnClick = true
-
                 // 防止越界
-                if (this.currentIndex === 6) {
-                    this.slider.style.left = -900 + 'px'
+                if (this.currentIndex === (this.sliceCount - 1)) {
+                    this.slider.style.left = '-' + this.sliceWidth + 'px'
                     this.currentIndex = 1
                 }
             })
-
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
             }
-            if (this.currentIndex < 5)
+            if (this.currentIndex < (this.sliceCount - 2))
                 this.pointers[this.currentIndex].classList.add('active')
             else
                 this.pointers[0].classList.add('active')
@@ -240,11 +262,9 @@
          * 向坐播放
          */
         goLeft() {
-
             this.isLeftBtnClick = false
             this.isRightBtnClick = false
-
-            animation(this.slider, {left: -900 * (this.currentIndex - 1)}, (res) => {
+            animation(this.slider, {left: -this.sliceWidth * (this.currentIndex - 1)}, (res) => {
                 console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex--
@@ -253,11 +273,10 @@
                 this.isRightBtnClick = true
                 // 防止越界
                 if (this.currentIndex === 0) {
-                    this.slider.style.left = -4500 + 'px'
-                    this.currentIndex = 5
+                    this.slider.style.left = -(this.sliceWidth * (this.sliceCount - 2)) + 'px'
+                    this.currentIndex = this.sliceCount - 2
                 }
             })
-
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
@@ -265,7 +284,7 @@
             if (this.currentIndex > 1)
                 this.pointers[this.currentIndex - 2].classList.add('active')
             else
-                this.pointers[4].classList.add('active')
+                this.pointers[this.pointers.length - 1].classList.add('active')
         }
 
         /**
