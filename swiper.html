@@ -140,6 +140,7 @@
 
 
     </style>
+    <script src="utils.js"></script>
 </head>
 <body>
 <div id="box">
@@ -211,30 +212,24 @@
         }
 
         goRight() {
-            let steps = this.getSteps(0, 900)
-            this.rightPlayTimer = setInterval(() => {
-                let now = parseInt(window.getComputedStyle(this.slider, null).left)
-                // 移动
-                if (steps.length > 0) {
-                    this.slider.style.left = now - steps.pop() + 'px'
-                    // 移动过程中 按钮改为不可以点击状态
-                    this.isRightBtnClick = false
-                } else {
-                    // 完成了移动
-                    // 清除定时器
-                    clearInterval(this.rightPlayTimer)
-                    // 将当前显示的滑片索引+1
-                    this.currentIndex++
-                    // 移动完成 按钮改为可以点击状态
-                    this.isRightBtnClick = true
+            this.isLeftBtnClick = false
+            this.isRightBtnClick = false
 
+            animation(this.slider, {left: -900 * (this.currentIndex + 2)}, (res) => {
+                console.log(res);
+                // 将当前显示的滑片索引+1
+                this.currentIndex++
+                // 移动完成 按钮改为可以点击状态
+                this.isLeftBtnClick = true
+                this.isRightBtnClick = true
+
+                // 防止越界
+                if (this.currentIndex === 5) {
+                    this.slider.style.left = -900 + 'px'
+                    this.currentIndex = 0
                 }
-            }, 30)
-            // 防止越界
-            if (this.currentIndex === 5) {
-                this.slider.style.left = -900 + 'px'
-                this.currentIndex = 0
-            }
+            })
+
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
@@ -246,29 +241,24 @@
         }
 
         goLeft() {
-            let steps = this.getSteps(0, 900)
-            this.leftPlayTImer = setInterval(() => {
-                let now = parseInt(window.getComputedStyle(this.slider, null).left)
-                // 移动
-                if (steps.length > 0) {
-                    this.slider.style.left = now + steps.pop() + 'px'
-                    // 移动过程中 按钮改为不可以点击状态
-                    this.isLeftBtnClick = false
-                } else {
-                    // 完成了移动
-                    // 清除定时器
-                    clearInterval(this.leftPlayTImer)
-                    // 将当前显示的滑片索引-1
-                    this.currentIndex--
-                    // 移动完成 按钮改为可以点击状态
-                    this.isLeftBtnClick = true
+
+            this.isLeftBtnClick = false
+            this.isRightBtnClick = false
+
+            animation(this.slider, {left: -900 * (this.currentIndex)}, (res) => {
+                console.log(res);
+                // 将当前显示的滑片索引+1
+                this.currentIndex--
+                // 移动完成 按钮改为可以点击状态
+                this.isLeftBtnClick = true
+                this.isRightBtnClick = true
+                // 防止越界
+                if (this.currentIndex === -1) {
+                    this.slider.style.left = -4500 + 'px'
+                    this.currentIndex = 4
                 }
-            }, 30)
-            // 防止越界
-            if (this.currentIndex === -1) {
-                this.slider.style.left = -4500 + 'px'
-                this.currentIndex = 4
-            }
+            })
+
             // 为小圆点设置活动样式
             for (let pointer of this.pointers) {
                 pointer.classList.remove('active')
@@ -286,34 +276,6 @@
             this.autoPlayTimer = setInterval(() => {
                 this.goRight()
             }, 3000)
-        }
-
-        sortNumber(a, b) {
-            return a - b
-        }
-
-        /**
-         * 获取给定范围的等差数列作为移动的步长
-         */
-        getSteps(start, end) {
-            let range = end - start
-            let total = 0
-            let step = 1
-            let arrs = []
-            while (total < range) {
-                step++
-                total += step
-                arrs.push(step)
-            }
-
-            let tmp = 0
-            tmp = total - range
-            if (tmp > 0) {
-                let last = arrs.pop()
-                arrs.push(last - tmp)
-            }
-            arrs.sort(this.sortNumber)
-            return arrs
         }
     }
 

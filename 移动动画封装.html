@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>移动动画封装</title>
+</head>
+<style>
+    #box {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        position: absolute;
+        left: 500px;
+        top: 100px;
+        opacity: 0.9;
+    }
+</style>
+<body>
+
+<div id="box"></div>
+<script>
+    // 获取当前style
+    function getCurrentStyle(obj, attr) {
+        let res
+        if (obj.currentStyle)
+            // IE 兼容写法 只有IE Opera 使用currentStyle
+            res = obj.currentStyle[attr]
+        else
+            res = window.getComputedStyle(obj, null)[attr]
+        return res
+    }
+
+
+    function animation(obj, json, callback) {
+        let now
+        let step
+        let direction
+        let current
+        let isStop = true
+        const t1 = setInterval(function () {
+            for (let attr in json) {
+                if (attr === 'opacity') {
+                    now = parseInt(getCurrentStyle(obj, attr) * 100)
+                    direction = json[attr] * 100 - now
+                    step = direction > 0 ? Math.ceil(direction / 10) : Math.floor((direction) / 10)
+                    current = now + step
+                    obj.style[attr] = current / 100
+                } else {
+                    now = parseInt(getCurrentStyle(obj, attr))
+                    direction = json[attr] - now
+                    step = direction > 0 ? Math.ceil(direction / 10) : Math.floor((direction) / 10)
+                    current = now + step
+                    obj.style[attr] = current + 'px'
+                }
+                isStop = now === current;
+            }
+
+            if (isStop) {
+                clearInterval(t1)
+                callback('动画执行结束！')
+            }
+        }, 30)
+    }
+
+    /*    const box = document.getElementById('box')
+        let left = getCurrentStyle(box, 'left')
+        let top1 = getCurrentStyle(box, 'top')
+        let opacity = getCurrentStyle(box, 'opacity')
+        console.log(left);
+        console.log(top1);
+        console.log(opacity);*/
+
+    const box = document.getElementById('box')
+    // animation(box, {left: 600, top: 800})
+    // animation(box, {opacity: 0.2})
+
+
+    animation(box, {left: 600, top: 800, opacity: 0.2}, function (res) {
+        console.log(res);
+    })
+</script>
+</body>
+</html>
