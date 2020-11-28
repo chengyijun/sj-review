@@ -9,7 +9,7 @@
             padding: 0;
         }
 
-        #box {
+        #swiper {
             width: 900px;
             height: 400px;
             background-color: cyan;
@@ -136,7 +136,7 @@
     <script src="utils.js"></script>
 </head>
 <body>
-<div id="box">
+<div id="swiper">
     <div id="viewer">
         <div id="slider">
             <div class="slice s1">1</div>
@@ -178,9 +178,8 @@
             this.currentIndex = 1
             // 自动播放定时器
             this.autoPlayTimer = null
-            // 是否可以点击按钮标志
-            this.isLeftBtnClick = true
-            this.isRightBtnClick = true
+            // 是否正在移动
+            this.isMoving = false
             // 监听事件
             this.eventHandlers();
         }
@@ -191,16 +190,18 @@
         eventHandlers() {
             // 监听左按钮
             this.btnleft.addEventListener('click', () => {
-                if (!this.isLeftBtnClick)
+                if (this.isMoving)
                     return
+
                 clearInterval(this.autoPlayTimer)
                 this.goLeft()
                 this.autoPlay()
             })
             // 监听右按钮
             this.btnright.addEventListener('click', () => {
-                if (!this.isRightBtnClick)
+                if (this.isMoving)
                     return
+
                 clearInterval(this.autoPlayTimer)
                 this.goRight()
                 this.autoPlay()
@@ -236,8 +237,9 @@
                 // 给li注册点击事件监听
                 li.onclick = (e) => {
 
-                    if (!this.isLeftBtnClick)
+                    if (this.isMoving)
                         return
+                    this.isMoving = true
                     clearInterval(this.autoPlayTimer)
 
                     this.isLeftBtnClick = false
@@ -245,10 +247,9 @@
                     animation(this.slider, {left: -this.sliceWidth * (i + 1)}, (res) => {
                         // console.log(res);
                         // 将当前显示的滑片索引+1
-                        this.currentIndex++
-                        // 移动完成 按钮改为可以点击状态
-                        this.isLeftBtnClick = true
-                        this.isRightBtnClick = true
+                        this.currentIndex = i + 1
+                        // 移动完成
+                        this.isMoving = false
                         // 防止越界
                         if (this.currentIndex === (this.sliceCount - 1)) {
                             this.slider.style.left = '-' + this.sliceWidth + 'px'
@@ -273,15 +274,15 @@
          * 向右播放
          */
         goRight() {
-            this.isLeftBtnClick = false
-            this.isRightBtnClick = false
+            if(this.isMoving)
+                return
+            this.isMoving = true
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex + 1)}, (res) => {
                 // console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex++
-                // 移动完成 按钮改为可以点击状态
-                this.isLeftBtnClick = true
-                this.isRightBtnClick = true
+                // 移动完成
+                this.isMoving = false
                 // 防止越界
                 if (this.currentIndex === (this.sliceCount - 1)) {
                     this.slider.style.left = '-' + this.sliceWidth + 'px'
@@ -302,15 +303,15 @@
          * 向坐播放
          */
         goLeft() {
-            this.isLeftBtnClick = false
-            this.isRightBtnClick = false
+            if(this.isMoving)
+                return
+            this.isMoving = true
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex - 1)}, (res) => {
                 // console.log(res);
                 // 将当前显示的滑片索引+1
                 this.currentIndex--
-                // 移动完成 按钮改为可以点击状态
-                this.isLeftBtnClick = true
-                this.isRightBtnClick = true
+                // 移动完成
+                this.isMoving = false
                 // 防止越界
                 if (this.currentIndex === 0) {
                     this.slider.style.left = -(this.sliceWidth * (this.sliceCount - 2)) + 'px'
