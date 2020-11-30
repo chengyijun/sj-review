@@ -18,7 +18,7 @@
             overflow: hidden;
         }
 
-        #viewer {
+        #swiper #viewer {
             width: 900px;
             height: 400px;
             background-color: lightblue;
@@ -26,7 +26,7 @@
 
         }
 
-        #slider {
+        #swiper #slider {
             width: 6300px;
             height: 400px;
             position: absolute;
@@ -35,28 +35,28 @@
 
         }
 
-        .s1 {
+        #swiper .s1 {
             background-color: red;
         }
 
-        .s2 {
+        #swiper .s2 {
             background-color: blue;
         }
 
-        .s3 {
+        #swiper .s3 {
             background-color: yellow;
         }
 
-        .s4 {
+        #swiper .s4 {
             background-color: green;
         }
 
-        .s5 {
+        #swiper .s5 {
             background-color: purple;
         }
 
 
-        .slice {
+        #swiper .slice {
             width: 900px;
             height: 400px;
             color: cyan;
@@ -65,7 +65,7 @@
 
         }
 
-        #pointer {
+        #swiper #pointer {
             z-index: 100;
             font-size: 20px;
             /*background-color: cyan;*/
@@ -75,7 +75,7 @@
             display: inline;
         }
 
-        .po {
+        #swiper .po {
             background-color: rgba(255, 255, 255, .7);
             width: 20px;
             height: 20px;
@@ -87,7 +87,7 @@
             margin-right: 10px;
         }
 
-        .po.active {
+        #swiper .po.active {
             background-color: rgba(0, 0, 0, .7);
             color: white;
             width: 20px;
@@ -100,7 +100,7 @@
             margin-right: 10px;
         }
 
-        .btn {
+        #swiper .btn {
             z-index: 100;
             position: absolute;
             bottom: 150px;
@@ -112,7 +112,7 @@
             border: 0;
         }
 
-        .btn:hover {
+        #swiper .btn:hover {
             z-index: 100;
             position: absolute;
             bottom: 150px;
@@ -123,11 +123,11 @@
             background-color: rgba(255, 0, 0, 0.4);
         }
 
-        .left {
+        #swiper .left {
             left: 0;
         }
 
-        .right {
+        #swiper .right {
             right: 0;
         }
 
@@ -274,7 +274,7 @@
          * 向右播放
          */
         goRight() {
-            if(this.isMoving)
+            if (this.isMoving)
                 return
             this.isMoving = true
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex + 1)}, (res) => {
@@ -303,7 +303,7 @@
          * 向坐播放
          */
         goLeft() {
-            if(this.isMoving)
+            if (this.isMoving)
                 return
             this.isMoving = true
             animation(this.slider, {left: -this.sliceWidth * (this.currentIndex - 1)}, (res) => {
