@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="yes" name="mobile-web-app-capable">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <style>
+        #box {
+            width: 200px;
+            height: 200px;
+            background-color: red;
+            position: absolute;
+            left: 100px;
+        }
+    </style>
+    <script src="utils.js"></script>
+</head>
+<body>
+<div id="box"></div>
+
+<script>
+    const box = document.getElementById('box')
+    let moveX = 0
+    let startX = 0
+    box.ontouchstart = function (event) {
+        // 记录开始移动时候的横坐标
+        startX = event.touches[0].pageX;
+        // 记录本次移动距离开始移动的距离是0
+        moveX = 0;
+    }
+
+    box.ontouchmove = function (event) {
+        moveX = event.touches[0].pageX - startX
+        box.style.transform = 'translateX(' + moveX + 'px)'; //根据手指的位置移动页面
+
+    }
+
+    box.ontouchend = function (event) {
+        console.log('滑动结束');
+    }
+</script>
+</body>
+</html>
